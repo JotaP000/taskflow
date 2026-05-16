@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  boards    Board[]
+  createdAt DateTime @default(now())
+}
+
+model Board {
+  id        Int      @id @default(autoincrement())
+  title     String
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+  columns   Column[]
+  createdAt DateTime @default(now())
+}
+
+model Column {
+  id        Int      @id @default(autoincrement())
+  title     String
+  board     Board    @relation(fields: [boardId], references: [id])
+  boardId   Int
+  tasks     Task[]
+  createdAt DateTime @default(now())
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  column      Column   @relation(fields: [columnId], references: [id])
+  columnId    Int
+  createdAt   DateTime @default(now())
+}
